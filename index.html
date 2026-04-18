@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aim Trainer del Amor 💖</title>
+
+<style>
+* {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body{ 
+  margin:0;
+  font-family:Arial;
+
+  background:#000; /* fallback fuerte */
+  background-image:radial-gradient(circle at center, #1a0033 0%, #000 80%);
+  background-attachment:fixed;
+
+  overflow:hidden;
+  color:white;
+}
+
+/* SACUDIDA */
+.shake{
+  animation:shake 0.3s;
+}
+@keyframes shake{
+  0%{transform:translate(0)}
+  25%{transform:translate(-5px,5px)}
+  50%{transform:translate(5px,-5px)}
+  75%{transform:translate(-5px,5px)}
+  100%{transform:translate(0)}
+}
+
+/* HUD */
+.hud{
+  position:absolute;
+  top:15px;
+  left:15px;
+
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+
+  padding:12px 16px;
+  border-radius:15px;
+
+  border:1px solid rgba(255,255,255,0.1);
+
+  font-size:14px;
+  line-height:1.6;
+
+  box-shadow:0 0 20px rgba(255,0,100,0.2);
+}
+
+.hud span{
+  color:#ff4da6;
+  font-weight:bold;
+  font-size:16px;
+
+  text-shadow:
+    0 0 5px #ff4da6,
+    0 0 10px #ff1a75;
+}
+
+.bump{
+  animation:bump 0.2s;
+}
+
+@keyframes bump{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.3);}
+  100%{transform:scale(1);}
+}
+
+/* BOTONES */
+.topBtns{
+  position:absolute;
+  top:10px;
+  right:10px;
+}
+
+button{
+  padding:10px 14px;
+  border:none;
+  border-radius:10px;
+  background:#ff2e88;
+  color:white;
+  margin-left:5px;
+  font-size:14px;
+}
+
+/* CORAZONES */
+.heart{
+  position:absolute;
+  font-size:45px;
+  cursor:pointer;
+  animation:pop 0.2s;
+  user-select:none;
+}
+
+.bad{
+  filter:grayscale(1) brightness(0.3);
+}
+
+@keyframes pop{
+  0%{transform:scale(0);}
+  100%{transform:scale(1);}
+}
+
+/* EFECTO HIT */
+.hit{
+  position:absolute;
+  font-size:20px;
+  animation:float 0.8s forwards;
+}
+@keyframes float{
+  0%{opacity:1; transform:translateY(0);}
+  100%{opacity:0; transform:translateY(-50px);}
+}
+
+/* MENSAJE */
+.loveMsg{
+  position:absolute;
+  top:20%;
+  width:100%;
+  text-align:center;
+  font-size:18px;
+  color:#ff9ecb;
+  animation:fade 1.5s forwards;
+}
+@keyframes fade{
+  0%{opacity:0; transform:translateY(10px)}
+  20%{opacity:1}
+  100%{opacity:0; transform:translateY(-20px)}
+}
+
+/* CENTRO */
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+#modBtn{
+  position:fixed;
+  bottom: 15px;
+  left:15px;
+  font-size:28px;
+  background:rgba(0,0,0,0.6);
+  color:white;
+  padding:8px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  z-index:9999;
+  backdrop-filter:blur(5px);
+  transition:0.2s;
+}
+#modBtn:hover{
+  transform:scale(1.1);
+}
+
+.modPanel{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#111;
+  color:white;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  z-index:10000;
+  box-shadow:0 0 25px rgba(255,0,100,0.5);
+}
+
+.modPanel input{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin-top:10px;
+  text-align:center;
+}
+
+.modPanel button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#ff4d88;
+  color:white;
+  cursor:pointer;
+}
+
+#bgLoveText{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:40px;
+  text-align:center;
+  font-weight:bold;
+
+  color:#ff6fa8;
+  opacity:0.12;
+
+  text-shadow:
+    0 0 10px #ff4da6,
+    0 0 20px #ff4da6,
+    0 0 40px #ff1a75;
+
+  pointer-events:none;
+  z-index:0;
+
+  animation:pulseLove 2s infinite; /* 🔥 AQUÍ */
+}
+
+@keyframes pulseLove{
+  0%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.05);}
+  100%{transform:translate(-50%,-50%) scale(1);}
+}
+
+#upgradePanel{
+  position:fixed;
+  bottom:15px;
+  right:15px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  z-index:9999;
+}
+
+#upgradePanel button{
+  background:rgba(0,0,0,0.6);
+  border:1px solid #ff4da6;
+  color:#fff;
+  padding:8px;
+  border-radius:10px;
+  font-size:12px;
+  backdrop-filter:blur(5px);
+}
+
+#panelUpgrades{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:999;
+}
+
+#panelUpgrades button{
+  background:#ff4da6;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.modGrid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.modGrid button{
+  background:linear-gradient(135deg,#ff4da6,#ff1a75);
+  border:none;
+  padding:12px;
+  border-radius:12px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 0 10px rgba(255,0,100,0.3);
+}
+
+.modGrid button:active{
+  transform:scale(0.95);
+}
+
+.freezeEffect{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle, rgba(0,150,255,0.15), rgba(0,0,50,0.6));
+  backdrop-filter:blur(4px);
+  z-index:9998;
+  pointer-events:none;
+  animation:freezeFade 0.3s;
+}
+
+@keyframes freezeFade{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+#mainMenu{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle, #1a0033, #000);
+  z-index:9999;
+  animation:fadeIn 1s;
+}
+
+.title{
+  font-size:28px;
+  margin-bottom:30px;
+  text-align:center;
+  color:#ff6fa8;
+  text-shadow:0 0 15px #ff4da6;
+}
+
+.menuBtn{
+  width:220px;
+  padding:15px;
+  margin:10px;
+  font-size:16px;
+  border:none;
+  border-radius:15px;
+  background:linear-gradient(135deg,#ff4da6,#ff1a75);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:0 0 20px rgba(255,0,120,0.4);
+}
+
+.menuBtn:hover{
+  transform:scale(1.08);
+}
+
+.menuBtn.secondary{
+  background:#222;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+#fadeScreen{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  transition:0.5s;
+  z-index:99999;
+}
+
+.menuBtn{
+  padding:15px 30px;
+  font-size:18px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(135deg,#ff4da6,#ff1a75);
+  color:white;
+  margin:10px;
+  cursor:pointer;
+  box-shadow:0 0 15px rgba(255,0,100,0.5);
+  transition:0.2s;
+}
+
+.menuBtn:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 25px rgba(255,0,100,0.8);
+}
+
+.menuBtn.secondary{
+  background:#333;
+}
+
+#record{
+  color:#ffd700;
+  text-shadow:
+    0 0 5px #ffd700,
+    0 0 15px #ffaa00;
+}
+
+#progressContainer{
+  position:fixed;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:60%;
+  height:12px;
+
+  background:rgba(255,255,255,0.1);
+  border-radius:10px;
+  overflow:hidden;
+
+  backdrop-filter:blur(5px);
+}
+
+#progressBar{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(90deg,#ff4da6,#ff1a75);
+  box-shadow:0 0 10px #ff4da6;
+
+  transition:width 0.2s;
+}
+
+.freezeText{
+  top:60% !important;
+  font-size:20px;
+  color:#66ccff;
+  text-shadow:0 0 15px #66ccff;
+}
+
+#shopBtn{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #ff4da6;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+#shopPanel{
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  height: 100%;
+  background: rgba(0,0,0,0.95);
+  z-index: 9999;
+  transition: 0.4s;
+}
+
+.shopItem{
+  display:flex;
+  justify-content: space-between;
+  margin:20px;
+  padding:15px;
+  background:#222;
+  border-radius:12px;
+}
+
+.shopItem button{
+  background:#ff4da6;
+  border:none;
+  padding:6px 12px;
+  border-radius:10px;
+}
+
+#shopPanel button:disabled{
+  background: #555;
+  opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<div id="fadeScreen"></div>
+
+<div id="mainMenu">
+  <h1 class="title">💘 Aim Trainer del Amor 💘</h1>
+
+  <button class="menuBtn" onclick="startGameAnimated()">JUGAR</button>
+  <button class="menuBtn secondary" onclick="showAbout()">SOBRE EL JUEGO</button>
+</div>
+
+<div id="bgLoveText">
+  Para Mi<br>Princesa Fabi 💖
+</div>
+
+<div class="hud">
+  💖 Puntos: <span id="score">0</span><br>
+  ⚡ Combo: <span id="combo">0</span><br>
+  🏆 Record: <span id="record">0</span><br>
+  🪙 Coins: <span id="coins">0</span><br>
+</div>
+
+
+<div class="center" id="centerText">
+  <h2>💘 Aim Trainer del Amor 💘</h2>
+  <p>Toca los corazones buenos 💖 y evita los oscuros 💔</p>
+</div>
+
+<div id="modBtn">⚙️</div>
+<div id="shopBtn">🛒 TIENDA</div>
+
+<div id="progressContainer">
+  <div id="progressBar"></div>
+</div>
+
+<div id="shopPanel">
+  <h2 style="text-align:center; margin-top:20px;">🛒 TIENDA</h2>
+
+  <div class="shopItem">
+    <div>💞 x2 clicks</div>
+    <button id="btnX2" onclick="buyX2()">3 🪙</button>
+  </div>
+
+  <div class="shopItem">
+    <div>💝 x3 clicks</div>
+    <button id="btnX3" onclick="buyX3()">10 🪙</button>
+  </div>
+
+  <hr style="margin:25px 0; opacity:0.2;">
+
+  <h3 style="text-align:center; margin-top:30px;">💖 Mejoras</h3>
+
+  <div class="shopItem">
+    <div>🤖 Auto Farm</div>
+    <button onclick="buyAutoFarm()">20 💖</button>
+  </div>
+
+  <div class="shopItem">
+    <div>🚫 Sin malos (10s)</div>
+    <button onclick="buyNoBad()">Gratis</button>
+  </div>
+
+  <div class="shopItem">
+    <div>🎉 Lluvia x30</div>
+    <button onclick="buyConfetti()">30 💖</button>
+  </div>
+
+  <button id="closeShop">Cerrar</button>
+</div>
+
+<script>
+let music = new Audio("musicainicial.mp3");
+music.loop = true;
+music.volume = 0.5;
+
+music.pause();
+music.currentTime = 0;
+
+document.getElementById("shopBtn").onclick = ()=>{
+  document.getElementById("shopPanel").style.right = "0";
+};
+
+document.getElementById("closeShop").onclick = ()=>{
+  document.getElementById("shopPanel").style.right = "-100%";
+};
+
+// 🔊 SISTEMA DE SONIDOS
+const sounds = {
+  heart: new Audio("Corazon.mp3"),
+  bad: new Audio("CoraRoto.mp3"),
+  freeze: new Audio("hielo.mp3"),
+  coin: new Audio("Moneda.mp3"),
+  reward: new Audio("Recompensa.mp3"),
+  diamond: new Audio("diamante.mp3")
+};
+
+// Función para reproducir sonidos sin bug en móvil
+function playSound(sound){
+  let s = sound.cloneNode(); // evita que se buguee al tocar rápido
+  s.volume = music.volume; // usa el mismo volumen que la música
+  s.play();
+}
+
+
+let savedVolume = localStorage.getItem("musicVolume");
+if(savedVolume !== null){
+  music.volume = parseFloat(savedVolume);
+}
+
+
+
+let score=0;
+let combo=0;
+let record=localStorage.record || 0;
+let nextGoal = 100;
+let opening = false;
+
+let multiplier = localStorage.getItem("multiplier") 
+  ? parseInt(localStorage.getItem("multiplier")) 
+  : 1;
+
+let boughtX2 = localStorage.getItem("boughtX2") === "true";
+let boughtX3 = localStorage.getItem("boughtX3") === "true";
+
+let coins = localStorage.getItem("coins") 
+  ? parseInt(localStorage.getItem("coins")) 
+  : 0;
+
+/* MÁS FÁCIL */
+let speed=1600; // más lento
+let playing=false;
+
+let autoLevel = 0;
+let autoActive = false;
+
+let noBadActive = false;
+let noBadCooldown = false;
+
+let confettiActive = false;
+let freezeActive = false;
+
+const scoreEl=document.getElementById("score");
+const comboEl=document.getElementById("combo");
+const recordEl=document.getElementById("record");
+const centerText=document.getElementById("centerText");
+const progressBar = document.getElementById("progressBar");
+const coinsEl = document.getElementById("coins");
+
+if(boughtX2){
+  document.getElementById("btnX2").disabled = true;
+}
+
+if(boughtX3){
+  document.getElementById("btnX3").disabled = true;
+}
+
+recordEl.innerText=record;
+
+/* MENSAJES */
+const mensajes=[
+"Te amo 💖","Eres mi todo","Hermosa","Mi princesa","Mi reina","Perfecta",
+"Te pienso","Mi vida","Eres única","Mi felicidad","Mi paz","Mi locura",
+"Mi sonrisa","Mi mundo","Mi sol","Mi estrella","Mi razón","Mi amor",
+"Siempre tú","Solo tú","Mi destino","Mi sueño","Mi cielo","Mi debilidad",
+"Mi todo 💞","Mi forever","Mi favorita","Mi corazón","Mi luz","Mi niña",
+"Mi reina hermosa","Te adoro","Mi angel","Mi magia","Mi calma",
+"Mi felicidad eterna","Eres perfecta","Eres arte","Eres especial",
+"Te elijo siempre","Mi lugar seguro","Mi universo","Mi todo 💖",
+"Mi chica favorita","Mi razón de sonreír","Mi debilidad 💕",
+"Mi vida entera","Eres increíble","Eres única 💞",
+"Te amo demasiado","Mi sueño hecho realidad"
+];
+
+/* DUPLICAR MENSAJES */
+while(mensajes.length<100){
+  mensajes.push(...mensajes);
+}
+
+/* INICIAR */
+function startGame(){
+music.currentTime = 0;
+music.play();
+  score=0;
+  combo=0;
+  speed=1600;
+  playing=true;
+  centerText.style.display="none";
+  loop();
+}
+
+function startGameAnimated(){
+
+  let fade = document.getElementById("fadeScreen");
+  let menu = document.getElementById("mainMenu");
+
+  fade.style.opacity = "1";
+
+  setTimeout(()=>{
+    menu.style.display = "none";
+    startGame();
+
+    setTimeout(()=>{
+      fade.style.opacity = "0";
+    },200);
+
+  },400);
+}
+
+function showAbout(){
+  alert("💖 Hecho con amor para mi princesa Fabi 💖\n\n💖Esos Sirven,💔 Evitalos, 💎 valen 5!!!, 🧊 Cuidado te frenarán!!, 🪙 Lo MEJOR O PEOR, Consigue el mayor puntaje!");
+}
+
+/* LOOP */
+function loop(){
+  if(!playing)return;
+
+  spawnHeart();
+
+  if(speed>700) speed-=5; // más suave
+
+  setTimeout(loop,speed);
+}
+
+/* SPAWN */
+function spawnHeart(){
+
+let rand = Math.random();
+let type = "normal";
+
+if(!noBadActive && rand < 0.20){
+  type = "bad";
+}
+else if(rand < 0.40){
+  type = "gold";
+}
+else if(rand < 0.60){
+  type = "freeze";
+}
+else if(rand < 0.62){
+  type = "treasure"; // 🪙 TEST ALTO
+}
+
+  let h=document.createElement("div");
+  h.className="heart";
+
+  if(type==="bad") h.classList.add("bad");
+
+  if(type==="gold") h.innerText="💎";
+else if(type==="freeze") h.innerText="🧊";
+else if(type==="treasure") h.innerText="🪙";
+else if(type==="bad") h.innerText="💔";
+else h.innerText="💖";
+
+  let x=Math.random()*(window.innerWidth-50);
+  let y=Math.random()*(window.innerHeight-50);
+
+  h.style.left=x+"px";
+  h.style.top=y+"px";
+
+  document.body.appendChild(h);
+
+  let timeout=setTimeout(()=>{
+    h.remove();
+    combo=0;
+    update();
+  },speed);
+
+  h.onclick=(e)=>{
+    clearTimeout(timeout);
+
+    if(type==="bad"){
+      score=Math.max(0,score-3);
+      combo=0;
+      shake();
+      vibrate();
+      playSound(sounds.bad);
+    }
+
+    else if(type==="gold"){
+      score += 5;
+      combo++;
+      loveMessage();
+      playSound(sounds.diamond);
+    }
+
+    else if(type==="freeze"){
+      score += 2;
+      combo++;
+      activateFreeze();
+      playSound(sounds.freeze);
+    }
+
+else if(type==="treasure"){
+  combo++;
+
+let coinGain = 1 + Math.floor(Math.random()*2);
+coins += coinGain;
+showBigText("🪙 +" + coinGain + " coins");
+
+  let premio = Math.floor(Math.random()*3);
+
+  if(premio === 0){
+    score += 25;
+    showBigText("💰 +25 puntos");
+    playSound(sounds.coin);
+  }
+
+  else if(premio === 1){
+    showBigText("🧊 Freeze EXTREMO");
+    activateFreeze(13000); // 13 segundos
+  }
+
+  else{
+    showBigText("💎 LLUVIA DE DIAMANTES");
+    startDiamondRain();
+  }
+}
+
+    else{
+      score += (1 + Math.floor(combo/4)) * multiplier;
+      combo++;
+      loveMessage();
+      playSound(sounds.heart);
+    }
+    
+    effect(e.clientX,e.clientY,type==="bad");
+    h.remove();
+    update();
+  };
+}
+
+/* EFECTO */
+function effect(x,y,isBad){
+  let e=document.createElement("div");
+  e.className="hit";
+  e.innerText=isBad?"💔":"💖";
+
+  e.style.left=x+"px";
+  e.style.top=y+"px";
+
+  e.style.transform = "scale(1.5)";
+
+  document.body.appendChild(e);
+
+  // 👇 AQUÍ VA EL BRILLO
+
+  setTimeout(()=>e.remove(),800);
+}
+
+/* MENSAJE BONITO */
+function loveMessage(){
+  let m=document.createElement("div");
+  m.className="loveMsg";
+  m.innerText=mensajes[Math.floor(Math.random()*mensajes.length)];
+  document.body.appendChild(m);
+
+  setTimeout(()=>m.remove(),1500);
+}
+
+/* SACUDIDA */
+function shake(){
+  document.body.classList.add("shake");
+  setTimeout(()=>document.body.classList.remove("shake"),300);
+}
+
+function activateFreeze(duration = 3000){
+  if(freezeActive) return;
+
+  freezeActive = true;
+  playing = false;
+
+  let ice = document.createElement("div");
+  ice.className = "freezeEffect";
+  document.body.appendChild(ice);
+
+  let msg = document.createElement("div");
+msg.className="loveMsg freezeText";
+msg.innerText="Tiempo congelado 🧊";
+  document.body.appendChild(msg);
+
+  setTimeout(()=>{
+    playing = true;
+    freezeActive = false;
+    ice.remove();
+    loop();
+  },duration);
+}
+
+/* VIBRACIÓN */
+function vibrate(){
+  if(navigator.vibrate){
+    navigator.vibrate(200);
+  }
+}
+
+function startDiamondRain(){
+  let rain = setInterval(()=>{
+    for(let i=0;i<5;i++){
+      let h=document.createElement("div");
+      h.className="heart";
+      h.innerText="💎";
+
+      let x=Math.random()*(window.innerWidth-50);
+      let y=Math.random()*(window.innerHeight-50);
+
+      h.style.left=x+"px";
+      h.style.top=y+"px";
+
+      document.body.appendChild(h);
+
+      h.onclick=(e)=>{
+        score += 5;
+        combo++;
+        effect(e.clientX,e.clientY,false);
+        h.remove();
+        update();
+      };
+
+      setTimeout(()=>h.remove(),1000);
+    }
+  },150);
+
+  setTimeout(()=>{
+    clearInterval(rain);
+  },5000);
+}
+
+function showBigText(text){
+  let m=document.createElement("div");
+  m.className="loveMsg";
+  m.style.fontSize="22px";
+  m.style.color="#ffd700";
+  m.innerText=text;
+  document.body.appendChild(m);
+
+  setTimeout(()=>m.remove(),1500);
+}
+
+/* UPDATE */
+function update(){
+scoreEl.innerText=score;
+comboEl.innerText=combo;
+coinsEl.innerText = coins;
+  
+scoreEl.classList.add("bump");
+comboEl.classList.add("bump");
+
+setTimeout(()=>{
+  scoreEl.classList.remove("bump");
+  comboEl.classList.remove("bump");
+},200);
+
+
+  if(score>record){
+    record=score;
+    localStorage.record=record;
+    recordEl.innerText=record;
+  }
+
+let progress = (score / nextGoal) * 100;
+progressBar.style.width = progress + "%";
+
+  if(score >= nextGoal && !opening){
+    specialEvent();
+    nextGoal += 100;
+    
+    localStorage.setItem("coins", coins);
+  }
+}
+
+function updateCoins(){
+  coinsEl.innerText = coins;
+  localStorage.setItem("coins", coins);
+}
+
+function buyConfetti(){
+  if(score < 30){
+    alert("Necesitas 30 💖");
+    return;
+  }
+
+  score -= 30;
+  update();
+
+  confettiActive = true;
+
+  let spam = setInterval(()=>{
+    for(let i=0;i<10;i++){
+      spawnHeart();
+    }
+  },200);
+
+  setTimeout(()=>{
+    clearInterval(spam);
+    confettiActive = false;
+  },20000);
+}
+
+function buyNoBad(){
+  if(noBadCooldown){
+    alert("Espera ⏳");
+    return;
+  }
+
+  noBadActive = true;
+  noBadCooldown = true;
+
+  setTimeout(()=>{
+    noBadActive = false;
+  },10000);
+
+  setTimeout(()=>{
+    noBadCooldown = false;
+  },10000);
+}
+
+function specialEvent(){
+playSound(sounds.reward);
+
+music.pause();
+
+  playing = false;
+  opening = true;
+
+  let overlay = document.createElement("div");
+  overlay.style.position="fixed";
+  overlay.style.top="0";
+  overlay.style.left="0";
+  overlay.style.width="100%";
+  overlay.style.height="100%";
+  overlay.style.background="rgba(0,0,0,0.85)";
+  overlay.style.display="flex";
+  overlay.style.flexDirection="column";
+  overlay.style.alignItems="center";
+  overlay.style.justifyContent="center";
+  overlay.style.zIndex="9999";
+  overlay.style.textAlign="center";
+
+  let title = document.createElement("h2");
+  title.innerText="🎉 ¡Recompensa desbloqueada! 🎉";
+
+let box = document.createElement("div");
+box.innerText="🎁";
+box.style.fontSize="80px";
+box.style.cursor="pointer";
+box.style.transition="0.1s";
+
+// 🔥 ANIMACIÓN TEMBLOR
+let shakeAnim = setInterval(()=>{
+  box.style.transform = "rotate("+(Math.random()*6-3)+"deg)";
+},100);
+
+let taps = 0;
+
+box.onclick=()=>{
+  taps++;
+
+  // EFECTO CLICK
+  box.style.transform="scale(0.85)";
+  setTimeout(()=>{
+    box.style.transform="scale(1)";
+  },100);
+
+  if(navigator.vibrate){
+    navigator.vibrate(60);
+  }
+
+  // BRILLO PROGRESIVO
+  box.style.filter = "brightness("+(1 + taps*0.15)+")";
+
+  if(taps>=8){
+
+    clearInterval(shakeAnim);
+
+    box.style.transform="scale(2)";
+    box.style.opacity="0";
+
+    setTimeout(()=>{
+      openReward(overlay);
+    },300);
+  }
+};
+
+  overlay.appendChild(title);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function openReward(overlay){
+  overlay.innerHTML="";
+
+  let reward = document.createElement("div");
+  reward.style.fontSize="18px";
+  reward.style.padding="20px";
+
+  reward.innerHTML=`
+  💖 <br><br>
+  Desbloqueaste algo especial…<br><br>
+  📸 Sácale captura y mándamela 😏<br><br>
+  Tengo una sorpresa para ti 💌
+  `;
+
+  let btn = document.createElement("button");
+  btn.innerText="Seguir jugando";
+  btn.style.marginTop="20px";
+
+  btn.onclick=()=>{
+  
+  music.play();
+  
+    overlay.remove();
+    playing = true;
+    opening = false;
+    loop();
+  };
+
+  overlay.appendChild(reward);
+  overlay.appendChild(btn);
+}
+
+document.getElementById("modBtn").onclick = ()=>{
+  openSettings();
+};
+
+function openHackLogin(){
+
+  document.querySelector(".modPanel").remove();
+
+  let panel = document.createElement("div");
+  panel.className = "modPanel";
+
+  panel.innerHTML = `
+    <h3>🔒 Acceso</h3>
+    <input type="password" id="modPass" placeholder="Contraseña">
+    <br>
+    <button onclick="checkMod()">Entrar</button>
+  `;
+
+  document.body.appendChild(panel);
+}
+
+function checkMod(){
+  let pass = document.getElementById("modPass").value;
+
+  if(pass === "123"){
+    openModMenu();
+  }else{
+    alert("❌ Contraseña incorrecta");
+  }
+}
+
+function openModMenu(){
+  let oldPanel = document.querySelector(".modPanel");
+if(oldPanel){
+  oldPanel.remove();
+}
+
+  let panel = document.createElement("div");
+  panel.className = "modPanel";
+
+panel.innerHTML = `
+<h2 style="margin-bottom:5px;">⚙️ Mod Menu</h2>
+
+<p style="font-size:12px; opacity:0.6; margin-bottom:10px;">
+Modo pruebas 💻
+</p>
+
+<div class="modGrid">
+  <button onclick="addPoints(10)">+10 💖</button>
+  <button onclick="addPoints(20)">+20 💖</button>
+  <button onclick="addPoints(30)">+30 💖</button>
+  <button onclick="addPoints(40)">+40 💖</button>
+  <button onclick="addPoints(50)">+50 💖</button>
+</div>
+
+<div class="modGrid">
+  <button onclick="addCoins(2)">+2 🪙</button>
+  <button onclick="addCoins(4)">+4 🪙</button>
+  <button onclick="addCoins(6)">+6 🪙</button>
+  <button onclick="addCoins(8)">+8 🪙</button>
+  <button onclick="addCoins(10)">+10 🪙</button>
+</div>
+
+<button onclick="closeMod()" style="margin-top:15px; background:#444;">
+Cerrar
+</button>
+`;
+
+  document.body.appendChild(panel);
+}
+
+function addPoints(amount){
+  score += amount;
+
+  update();
+
+  if(navigator.vibrate){
+    navigator.vibrate(80);
+  }
+}
+
+function addCoins(amount){
+  coins += amount;
+
+  updateCoins();
+
+  if(navigator.vibrate){
+    navigator.vibrate(80);
+  }
+}
+
+function closeMod(){
+  document.querySelector(".modPanel").remove();
+}
+
+function buyAutoFarm(){
+  if(autoLevel >= 3){
+    alert("Max nivel 🤖");
+    return;
+  }
+
+  let cost = 20 + (autoLevel * 15);
+
+  if(score < cost){
+    alert("No tienes puntos 💔");
+    return;
+  }
+
+  score -= cost;
+  autoLevel++;
+  update();
+
+  if(!autoActive){
+    autoActive = true;
+    startAutoFarm();
+  }
+}
+
+function startAutoFarm(){
+  setInterval(()=>{
+    if(autoLevel > 0){
+      score += autoLevel; // más nivel = más puntos
+      update();
+    }
+  },1000);
+}
+
+function openSettings(){
+
+  let panel = document.createElement("div");
+  panel.className = "modPanel";
+
+  panel.innerHTML = `
+    <h2 style="margin-bottom:10px;">⚙️ Ajustes</h2>
+
+    <div style="margin-top:15px;">
+      <p>🎵 Volumen música</p>
+
+      <input 
+        type="range" 
+        min="0" 
+        max="100" 
+        value="${Math.floor(music.volume * 100)}" 
+        id="volumeSlider"
+        style="width:80%;"
+      >
+
+      <p id="volumeText">${Math.floor(music.volume * 100)}%</p>
+    </div>
+
+    <hr style="margin:20px 0; opacity:0.2;">
+
+    <button onclick="openHackLogin()">
+      🎮 Activar Panel Hack
+    </button>
+
+    <button onclick="closeMod()" style="margin-top:15px; background:#444;">
+      Cerrar
+    </button>
+  `;
+
+  document.body.appendChild(panel);
+
+  setupVolumeControl();
+}
+
+function setupVolumeControl(){
+  let slider = document.getElementById("volumeSlider");
+  let text = document.getElementById("volumeText");
+
+  slider.oninput = ()=>{
+    let vol = slider.value / 100;
+
+    music.volume = vol;
+    text.innerText = slider.value + "%";
+
+    localStorage.setItem("musicVolume", vol);
+  };
+}
+
+
+function buyX2(){
+
+  if(boughtX2){
+    return;
+  }
+
+  if(coins < 3){
+    alert("No tienes monedas 🪙");
+    return;
+  }
+
+  coins -= 3;
+  multiplier = 2;
+  boughtX2 = true;
+  
+  localStorage.setItem("boughtX2", true);
+localStorage.setItem("multiplier", multiplier);
+
+  updateCoins();
+
+  // vibración
+  if(navigator.vibrate){
+    navigator.vibrate(100);
+  }
+
+  showShopText("💞 Comprado");
+
+  // desactivar botón
+  document.getElementById("btnX2").disabled = true;
+}
+
+function buyX3(){
+
+  if(boughtX3){
+    return;
+  }
+
+  if(coins < 10){
+    alert("No tienes monedas 🪙");
+    return;
+  }
+
+  coins -= 10;
+  multiplier = 3;
+  boughtX3 = true;
+  
+  localStorage.setItem("boughtX3", true);
+localStorage.setItem("multiplier", multiplier);
+
+  updateCoins();
+
+  if(navigator.vibrate){
+    navigator.vibrate(100);
+  }
+
+  showShopText("💝 Comprado");
+
+  document.getElementById("btnX3").disabled = true;
+}
+
+function showShopText(text){
+  let m = document.createElement("div");
+  m.className = "loveMsg";
+  m.style.fontSize = "20px";
+  m.style.color = "#00ffcc";
+  m.innerText = text;
+
+  document.body.appendChild(m);
+
+  setTimeout(()=>{
+    m.remove();
+  },1500);
+}
+
+document.addEventListener("keydown", function(e){
+
+  if(e.key === "Escape"){ // esto simula botón atrás
+
+    // 🛒 Si tienda abierta → cerrar
+    let shop = document.getElementById("shopPanel");
+    if(shop.style.right === "0px"){
+      shop.style.right = "-100%";
+      return;
+    }
+
+    // ⚙️ Si hay panel abierto → cerrar
+    let panel = document.querySelector(".modPanel");
+    if(panel){
+      panel.remove();
+      return;
+    }
+
+    // 🎁 Si hay reward abierto → ignorar (opcional)
+    if(opening){
+      return;
+    }
+
+    // 🎮 Si está jugando → volver al menú
+    if(playing){
+      playing = false;
+      music.pause();
+
+      document.getElementById("mainMenu").style.display = "flex";
+      return;
+    }
+
+    // 🚪 Si ya está en menú → salir (en APK)
+    window.close();
+  }
+
+});
+</script>
+
+</body>
+</html>
